@@ -96,6 +96,11 @@ Rails.application.routes.draw do
   get '/auth/failure', to: 'sessions#omniauth_fail'
   post '/auth/ldap', to: 'sessions#ldap', as: :ldap_callback
 
+  resources :orders do
+    collection do
+      get 'express'
+    end
+  end
   # Room resources.
   resources :rooms, only: [:create, :show, :destroy], param: :room_uid, path: '/'
 
@@ -120,6 +125,8 @@ Rails.application.routes.draw do
       delete '/', to: 'recordings#delete_recording', as: :delete_recording
     end
   end
+
+
 
   root to: 'main#index'
 end

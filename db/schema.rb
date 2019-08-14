@@ -10,9 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_26_153012) do
+ActiveRecord::Schema.define(version: 2019_08_13_204731) do
 
-  create_table "features", force: :cascade do |t|
+  create_table "carts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.datetime "purchased_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "features", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "setting_id"
     t.string "name", null: false
     t.string "value"
@@ -23,7 +29,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_153012) do
     t.index ["setting_id"], name: "index_features_on_setting_id"
   end
 
-  create_table "invitations", force: :cascade do |t|
+  create_table "invitations", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", null: false
     t.string "provider", null: false
     t.string "invite_token"
@@ -33,7 +39,32 @@ ActiveRecord::Schema.define(version: 2019_07_26_153012) do
     t.index ["provider"], name: "index_invitations_on_provider"
   end
 
-  create_table "roles", force: :cascade do |t|
+  create_table "order_transactions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "order_id"
+    t.string "action"
+    t.integer "amount"
+    t.boolean "success"
+    t.string "authorization"
+    t.string "message"
+    t.text "params"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "cart_id"
+    t.string "ip_address"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "card_type"
+    t.date "card_expires_on"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "express_token"
+    t.string "express_payer_id"
+  end
+
+  create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "priority", default: 9999
     t.boolean "can_create_rooms", default: false
@@ -50,7 +81,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_153012) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
-  create_table "rooms", force: :cascade do |t|
+  create_table "rooms", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
     t.string "name"
     t.string "uid"
@@ -71,14 +102,14 @@ ActiveRecord::Schema.define(version: 2019_07_26_153012) do
     t.index ["user_id"], name: "index_rooms_on_user_id"
   end
 
-  create_table "settings", force: :cascade do |t|
+  create_table "settings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "provider", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["provider"], name: "index_settings_on_provider"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "room_id"
     t.string "provider"
     t.string "uid"
@@ -104,7 +135,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_153012) do
     t.index ["room_id"], name: "index_users_on_room_id"
   end
 
-  create_table "users_roles", id: false, force: :cascade do |t|
+  create_table "users_roles", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "user_id"
     t.integer "role_id"
     t.index ["role_id"], name: "index_users_roles_on_role_id"

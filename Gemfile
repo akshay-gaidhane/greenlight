@@ -78,7 +78,8 @@ gem 'cancancan', '~> 2.0'
 
 group :production do
   # Use a postgres database in production.
-  gem 'pg', '~> 0.18'
+  # gem 'pg', '~> 0.18'
+  gem 'mysql2'
 
   # For a better logging library in production
   gem "lograge"
@@ -93,7 +94,8 @@ group :development, :test do
   # Environment configuration.
   gem 'dotenv-rails'
   # Use a sqlite database in test and development.
-  gem 'sqlite3', '~> 1.3.6'
+  # gem 'sqlite3', '~> 1.3.6'
+  gem 'mysql2'
 end
 
 group :test do
@@ -129,3 +131,4 @@ gem 'random_password'
 gem "recaptcha"
 
 gem 'i18n-language-mapping', '~> 0.1.0'
+gem 'activemerchant'
