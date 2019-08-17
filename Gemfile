@@ -80,7 +80,7 @@ group :production do
   # Use a postgres database in production.
   # gem 'pg', '~> 0.18'
   gem 'mysql2'
-
+  gem 'dotenv-rails'
   # For a better logging library in production
   gem "lograge"
 end
