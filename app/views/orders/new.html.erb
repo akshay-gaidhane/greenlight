@@ -34,7 +34,7 @@
               </div>
             <% else %>
               <%= f.hidden_field :express_token %>
-              <%= hidden_field_tag :room_uid, current_user.main_room.uid %>
+              <%= hidden_field_tag :room_id, params[:room_id] %>
               <%= current_user.name %></br>
               <%= current_user.email %></br>
               <%= t("#{@order.first_name }") %><%= t("#{@order.last_name }") %>

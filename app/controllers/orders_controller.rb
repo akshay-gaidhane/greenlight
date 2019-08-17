@@ -1,9 +1,11 @@
 class OrdersController < ApplicationController
-  before_action :find_user, only: [:create, :new, :express]
+  # before_action :find_user, only: [:create, :new, :express]
+  before_action :find_room, only: [:create, :new, :express]
   def express
-    response = EXPRESS_GATEWAY.setup_purchase(current_cart.build_order.price_in_cents,
+    # current_cart.build_order.price_in_cents
+    response = EXPRESS_GATEWAY.setup_purchase(@room.build_order.price_in_cents,
       :ip                => request.remote_ip,
-      :return_url        => new_order_url(),
+      :return_url        => new_order_url(room_id: @room.uid),
       :cancel_return_url => request.base_url
     )
     redirect_to EXPRESS_GATEWAY.redirect_url_for(response.token)
@@ -14,14 +16,16 @@ class OrdersController < ApplicationController
   end
   
   def create
-    @order = current_cart.build_order(order_params)
+    # current_cart.build_order(order_params)
+    @order = @room.build_order(order_params)
     @order.ip_address = request.remote_ip
-
     if @order.save
       if @order.purchase
         flash.now[:notice] = 'Successfully purchased.'
-        redirect_to root_url
+        redirect_to room_path(@room.uid)
       else
+        @room.order.delete
+        @room.delete
         flash.now[:notice] = 'Purchase unsuccessful. Please try again'
         redirect_to root_url
       end
@@ -33,5 +37,9 @@ class OrdersController < ApplicationController
     
   def order_params
     params.require(:order).permit(:express_token)
+  end
+
+  def find_room
+    @room = Room.find_by_uid params[:room_id]
   end
 end

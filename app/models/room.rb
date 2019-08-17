@@ -28,6 +28,7 @@ class Room < ApplicationRecord
   validates :name, presence: true
 
   belongs_to :owner, class_name: 'User', foreign_key: :user_id
+  has_one :order
 
   META_LISTED = "gl-listed"
 
@@ -139,6 +140,10 @@ class Room < ApplicationRecord
   # Deletes a recording from a room.
   def delete_recording(record_id)
     bbb(owner.provider).delete_recordings(record_id)
+  end
+
+  def paid_room(room)
+    room.order.present? && room.order.transactions.last.success?
   end
 
   private

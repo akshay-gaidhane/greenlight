@@ -1,5 +1,6 @@
 class Order < ApplicationRecord
-  belongs_to :cart
+  # belongs_to :cart
+  belongs_to :room
   has_many :transactions, :class_name => "OrderTransaction"
   
   attr_accessor :card_number, :card_verification
@@ -9,7 +10,7 @@ class Order < ApplicationRecord
   def purchase
     response = process_purchase
     transactions.create!(:action => "purchase", :amount => price_in_cents, :response => response)
-    cart.update_attribute(:purchased_at, Time.now) if response.success?
+    # cart.update_attribute(:purchased_at, Time.now) if response.success?
     response.success?
   end
   

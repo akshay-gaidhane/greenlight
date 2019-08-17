@@ -119,6 +119,17 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  config.after_initialize do
+    ActiveMerchant::Billing::Base.mode = :test
+    paypal_options = {
+      :login => ENV["LOGIN"],
+      :password => ENV["PASSWORD"],
+      :signature => ENV["SIGNATURE"]
+    }
+    ::STANDARD_GATEWAY = ActiveMerchant::Billing::PaypalGateway.new(paypal_options)
+    ::EXPRESS_GATEWAY = ActiveMerchant::Billing::PaypalExpressGateway.new(paypal_options)
+  end
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 

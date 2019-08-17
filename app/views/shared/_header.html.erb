@@ -22,7 +22,7 @@
 
       <div class="d-flex ml-auto">
         <% if current_user %>
-          <%= link_to image_tag("https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"), express_orders_path %>
+          <%#= link_to image_tag("https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif"), express_orders_path %>
           <% if current_user.has_role? :super_admin %>
             <% admins_page = params[:controller] == "admins" && params[:action] == "index" ? "active" : "" %>
             <%= link_to admins_path, class: "px-3 mx-1 mt-1 header-nav #{admins_page}" do %>
