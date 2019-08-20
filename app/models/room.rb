@@ -28,7 +28,7 @@ class Room < ApplicationRecord
   validates :name, presence: true
 
   belongs_to :owner, class_name: 'User', foreign_key: :user_id
-  has_one :order
+  has_many :orders
 
   META_LISTED = "gl-listed"
 
@@ -143,7 +143,8 @@ class Room < ApplicationRecord
   end
 
   def paid_room(room)
-    room.order.present? && room.order.transactions.last.success?
+    orders = room.orders.where(order_type: "Room")
+    orders.present? && orders.last.transactions.present? && orders.last.transactions.last.success?
   end
 
   private

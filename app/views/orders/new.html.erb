@@ -34,6 +34,7 @@
               </div>
             <% else %>
               <%= f.hidden_field :express_token %>
+              <%= f.hidden_field :order_type%>
               <%= hidden_field_tag :room_id, params[:room_id] %>
               <%= current_user.name %></br>
               <%= current_user.email %></br>

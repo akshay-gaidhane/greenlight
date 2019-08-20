@@ -42,7 +42,7 @@ class RoomsController < ApplicationController
       room_params[:require_moderator_approval], room_params[:anyone_can_start], room_params[:all_join_moderator])
 
     if @room.save
-      return redirect_to express_orders_path(room_id: @room)
+      return redirect_to express_orders_path(room_id: @room, order_type: "Room")
       if room_params[:auto_join] == "1"
         start
       else
@@ -161,27 +161,31 @@ class RoomsController < ApplicationController
   def start
     if @room.paid_room(@room)
       # Join the user in and start the meeting.
-      opts = default_meeting_options
-      opts[:user_is_moderator] = true
-
-      # Include the user's choices for the room settings
-      room_settings = JSON.parse(@room[:room_settings])
-      opts[:mute_on_start] = room_settings["muteOnStart"] if room_settings["muteOnStart"]
-      opts[:require_moderator_approval] = room_settings["requireModeratorApproval"]
-
-      begin
-        redirect_to @room.join_path(current_user.name, opts, current_user.uid)
-      rescue BigBlueButton::BigBlueButtonException => e
-        redirect_to room_path, alert: I18n.t(e.key.to_s.underscore, default: I18n.t("bigbluebutton_exception"))
-      end
-
-      # Notify users that the room has started.
-      # Delay 5 seconds to allow for server start, although the request will retry until it succeeds.
-      NotifyUserWaitingJob.set(wait: 5.seconds).perform_later(@room)
+      redirect_to express_orders_path(room_id: @room, order_type: "Session")
     else
       flash[:alert] = I18n.t("room.payment_error")
       return redirect_to express_orders_path(room_id: @room)
     end
+  end
+
+  def start_meeting
+    opts = default_meeting_options
+    opts[:user_is_moderator] = true
+
+    # Include the user's choices for the room settings
+    room_settings = JSON.parse(@room[:room_settings])
+    opts[:mute_on_start] = room_settings["muteOnStart"] if room_settings["muteOnStart"]
+    opts[:require_moderator_approval] = room_settings["requireModeratorApproval"]
+
+    begin
+      redirect_to @room.join_path(current_user.name, opts, current_user.uid)
+    rescue BigBlueButton::BigBlueButtonException => e
+      redirect_to room_path, alert: I18n.t(e.key.to_s.underscore, default: I18n.t("bigbluebutton_exception"))
+    end
+
+    # Notify users that the room has started.
+    # Delay 5 seconds to allow for server start, although the request will retry until it succeeds.
+    NotifyUserWaitingJob.set(wait: 5.seconds).perform_later(@room)
   end
 
   # POST /:room_uid/update_settings

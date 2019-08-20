@@ -112,6 +112,7 @@ Rails.application.routes.draw do
     post '/', to: 'rooms#join'
     patch '/', to: 'rooms#update', as: :update_room
     post '/update_settings', to: 'rooms#update_settings'
+    get '/start_meeting', to: 'rooms#start_meeting'
     post '/start', to: 'rooms#start', as: :start_room
     get '/logout', to: 'rooms#logout', as: :logout_room
     post '/login', to: 'rooms#login', as: :login_room
