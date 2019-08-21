@@ -42,7 +42,6 @@ class RoomsController < ApplicationController
       room_params[:require_moderator_approval], room_params[:anyone_can_start], room_params[:all_join_moderator])
 
     if @room.save
-      return redirect_to express_orders_path(room_id: @room, order_type: "Room")
       if room_params[:auto_join] == "1"
         start
       else
@@ -159,13 +158,8 @@ class RoomsController < ApplicationController
 
   # POST /:room_uid/start
   def start
-    if @room.paid_room(@room)
-      # Join the user in and start the meeting.
-      redirect_to express_orders_path(room_id: @room, order_type: "Session")
-    else
-      flash[:alert] = I18n.t("room.payment_error")
-      return redirect_to express_orders_path(room_id: @room)
-    end
+    # Join the user in and start the meeting.
+    redirect_to express_orders_path(room_id: @room, order_type: "Session")
   end
 
   def start_meeting
